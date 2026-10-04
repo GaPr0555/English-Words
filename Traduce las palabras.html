@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Traduce las palabras</title>
+<style>
+:root{--bg:#0f1a1f;--card:#16252c;--tx:#f2f6f7;--mut:#8a9ba3;--bd:#2c4048;--ok:#7ed321;--bl:#1cb0f6;--rd:#ff5a5f;--off:#2a3b43;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f8fa;--card:#fff;--tx:#14262d;--mut:#5d7078;--bd:#c9d6dc;--ok:#3f9b0b;--off:#dbe5e9}}
+:root[data-theme="light"]{--bg:#f4f8fa;--card:#fff;--tx:#14262d;--mut:#5d7078;--bd:#c9d6dc;--ok:#3f9b0b;--off:#dbe5e9}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column;padding:16px;box-sizing:border-box;max-width:520px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:baseline}
+h1{font-size:1.05rem;margin:0}
+#cnt{color:var(--mut);font-size:.85rem}
+#bar{height:6px;background:var(--off);border-radius:3px;margin:10px 0;overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;min-height:0}
+#card{background:var(--card);border:2px solid var(--bd);border-radius:22px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.9rem;font-weight:700;text-align:center;padding:16px;overflow-wrap:anywhere}
+#card small{display:block;font-size:.85rem;font-weight:400;color:var(--mut);margin-top:6px}
+#card.ok{border-color:var(--ok);color:var(--ok)}
+#card.no{border-color:var(--rd);color:var(--rd)}
+input{width:100%;box-sizing:border-box;font-size:1.05rem;padding:12px;border-radius:10px;border:2px solid var(--bl);background:var(--card);color:var(--tx);outline:none}
+button{font:inherit;font-weight:700;letter-spacing:.04em;padding:13px;border:0;border-radius:10px;background:var(--ok);color:#10200a;cursor:pointer}
+button:disabled{background:var(--off);color:var(--mut);cursor:default}
+button.sec{background:none;color:var(--mut);font-weight:400;padding:6px}
+</style></head><body>
+<header><h1>Traduce las palabras</h1><span id="cnt"></span></header>
+<div id="bar"><i></i></div>
+<main>
+<div id="card"></div>
+<input id="in" placeholder="Escribe en inglés" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+<button id="go" disabled>COMPROBAR</button>
+</main>
+<script>
+/* LISTA DE PALABRAS: una por línea, español=inglés (alternativas separadas por /).
+   Para actualizarla, agrega o quita líneas. Las palabras nuevas se practican 2 veces. */
+const RAW=`mesera=waitress
+increíble=incredible/amazing
+pantalla=screen
+otro=other/another
+creo=believe/think
+del todo=at all/entirely
+carne de res=beef
+reunión=meeting
+hay=there is/there are/there
+en silencio=muted/silent/silently/quietly
+guarnición=side dish
+tener=have
+hacer=do/make
+ir=go
+venir=come
+ver=see
+mirar=look/watch
+oír=hear
+escuchar=listen
+hablar=speak/talk
+decir=say/tell
+preguntar=ask
+responder=answer/reply
+comer=eat
+beber=drink
+dormir=sleep
+despertar=wake up
+correr=run
+caminar=walk
+saltar=jump
+sentarse=sit
+levantarse=stand up/get up
+abrir=open
+cerrar=close
+empezar=start/begin
+terminar=finish/end
+esperar=wait/hope
+buscar=look for/search
+encontrar=find
+dar=give
+tomar=take/drink
+llevar=carry/take
+traer=bring
+poner=put
+usar=use
+necesitar=need
+querer=want
+gustar=like
+amar=love
+odiar=hate
+pensar=think
+saber=know
+conocer=meet/know
+entender=understand
+aprender=learn
+enseñar=teach
+estudiar=study
+leer=read
+escribir=write
+dibujar=draw
+cantar=sing
+bailar=dance
+jugar=play
+trabajar=work
+vivir=live
+morir=die
+comprar=buy
+vender=sell
+pagar=pay
+costar=cost
+ganar=win/earn
+perder=lose
+cambiar=change
+ayudar=help
+llamar=call
+enviar=send
+recibir=receive
+olvidar=forget
+recordar=remember
+viajar=travel
+llegar=arrive
+salir=leave/go out
+entrar=enter
+volver=return/come back
+cocinar=cook
+limpiar=clean
+lavar=wash
+cortar=cut
+romper=break
+construir=build
+elegir=choose
+reír=laugh
+llorar=cry
+sonreír=smile
+mentir=lie
+compartir=share
+mostrar=show
+explicar=explain
+intentar=try
+crecer=grow
+caer=fall
+subir=go up/climb
+bajar=go down
+nadar=swim
+volar=fly
+conducir=drive
+pedir=ask for/order/request
+parecer=seem
+sentir=feel
+extrañar=miss
+cuidar=take care of
+casa=house/home
+coche=car
+calle=street
+ciudad=city
+pueblo=town/village
+país=country
+escuela=school
+universidad=university
+trabajo=job/work
+oficina=office
+tienda=store/shop
+mercado=market
+hospital=hospital
+banco=bank
+parque=park
+playa=beach
+montaña=mountain
+río=river
+mar=sea
+bosque=forest
+árbol=tree
+flor=flower
+sol=sun
+luna=moon
+estrella=star
+cielo=sky
+nube=cloud
+lluvia=rain
+viento=wind
+nieve=snow
+fuego=fire
+agua=water
+tierra=earth/land/ground
+día=day
+noche=night
+mañana=morning/tomorrow
+tarde=afternoon/late/evening
+semana=week
+mes=month
+año=year
+hora=hour
+tiempo=time/weather
+familia=family
+madre=mother
+padre=father
+hermano=brother
+hermana=sister
+hijo=son
+hija=daughter
+abuelo=grandfather
+abuela=grandmother
+tío=uncle
+tía=aunt
+primo=cousin
+amigo=friend
+vecino=neighbor
+niño=boy/child/kid
+niña=girl
+hombre=man
+mujer=woman
+gente=people
+maestro=teacher
+médico=doctor
+jefe=boss
+cliente=customer/client
+perro=dog
+gato=cat
+pájaro=bird
+pez=fish
+caballo=horse
+vaca=cow
+cerdo=pig
+pan=bread
+leche=milk
+queso=cheese
+huevo=egg
+pollo=chicken
+arroz=rice
+frijoles=beans
+sopa=soup
+ensalada=salad
+fruta=fruit
+manzana=apple
+naranja=orange
+plátano=banana
+uva=grape
+fresa=strawberry
+verdura=vegetable
+papa=potato
+cebolla=onion
+azúcar=sugar
+sal=salt
+café=coffee
+té=tea
+jugo=juice
+cerveza=beer
+desayuno=breakfast
+almuerzo=lunch
+cena=dinner/supper
+postre=dessert
+mesa=table
+silla=chair
+cama=bed
+puerta=door
+ventana=window
+pared=wall
+techo=ceiling/roof
+cocina=kitchen
+baño=bathroom
+sala=living room
+cuarto=room
+llave=key
+libro=book
+cuaderno=notebook
+lápiz=pencil
+papel=paper
+computadora=computer
+teléfono=phone/telephone
+cámara=camera
+reloj=watch/clock
+mochila=backpack
+maleta=suitcase
+dinero=money
+tarjeta=card
+boleto=ticket
+carta=letter
+foto=photo/picture
+mapa=map
+regalo=gift/present
+juguete=toy
+espejo=mirror
+cuchillo=knife
+cuchara=spoon
+tenedor=fork
+plato=plate/dish
+vaso=glass
+taza=cup
+botella=bottle
+caja=box
+ropa=clothes
+camisa=shirt
+pantalones=pants/trousers
+zapatos=shoes
+sombrero=hat
+vestido=dress
+abrigo=coat
+cabeza=head
+cara=face
+ojo=eye
+oreja=ear
+nariz=nose
+boca=mouth
+diente=tooth
+mano=hand
+dedo=finger
+brazo=arm
+pierna=leg
+pie=foot
+corazón=heart
+espalda=back
+cabello=hair
+cuerpo=body
+grande=big/large
+pequeño=small/little
+alto=tall/high
+bajo=short/low
+largo=long
+corto=short
+nuevo=new
+viejo=old
+joven=young
+bueno=good
+malo=bad
+mejor=better/best
+peor=worse/worst
+bonito=pretty/beautiful
+feo=ugly
+fácil=easy
+difícil=difficult/hard
+rápido=fast/quick
+lento=slow
+caliente=hot
+frío=cold
+feliz=happy
+triste=sad
+enojado=angry/mad
+cansado=tired
+ocupado=busy
+libre=free
+lleno=full
+vacío=empty
+limpio=clean
+sucio=dirty
+fuerte=strong
+débil=weak
+rico=rich/delicious
+pobre=poor
+caro=expensive
+barato=cheap
+cerca=near/close
+lejos=far
+importante=important
+diferente=different
+mismo=same
+todo=all/everything
+mucho=much/a lot/many
+poco=little/few
+pero=but
+porque=because
+también=also/too
+siempre=always
+nunca=never
+a veces=sometimes
+ahora=now
+hoy=today
+ayer=yesterday
+después=after/later/afterwards
+antes=before
+todavía=still/yet
+ya=already
+aquí=here
+allá=there
+dónde=where
+cuándo=when
+cómo=how
+quién=who
+qué=what
+por qué=why
+entre=between/among
+sin=without
+con=with
+sobre=about/over/on
+durante=during
+hasta=until
+desde=since/from
+casi=almost
+solo=only/alone
+tal vez=maybe/perhaps
+dentro=inside
+fuera=outside
+arriba=up/above
+abajo=down/below
+adelante=forward/ahead
+atrás=behind/back
+algo=something
+alguien=someone/somebody
+nada=nothing
+nadie=nobody/no one
+cada=each/every
+otra vez=again
+rojo=red
+azul=blue
+verde=green
+amarillo=yellow
+negro=black
+blanco=white
+gris=gray/grey
+morado=purple
+marrón=brown
+uno=one
+dos=two
+tres=three
+cuatro=four
+cinco=five
+seis=six
+siete=seven
+ocho=eight
+nueve=nine
+diez=ten
+cien=hundred/one hundred
+mil=thousand
+lunes=monday
+martes=tuesday
+miércoles=wednesday
+jueves=thursday
+viernes=friday
+sábado=saturday
+domingo=sunday
+vacaciones=vacation/holiday
+fiesta=party
+juego=game
+música=music
+canción=song
+película=movie/film
+deporte=sport
+equipo=team/equipment
+problema=problem
+pregunta=question
+respuesta=answer
+verdad=truth
+historia=story/history
+vida=life
+amor=love
+miedo=fear
+suerte=luck
+sueño=dream/sleep
+palabra=word
+nombre=name
+número=number
+lugar=place
+cosa=thing
+manera=way
+vez=time/occasion
+parte=part`;
+/* ORACIONES DE EJEMPLO: palabra en español|oración en inglés */
+const EXR=`mesera|The waitress brought us the menu.
+increíble|The view from the top is incredible.
+pantalla|My phone screen is broken.
+otro|I need another cup of coffee.
+creo|I believe you are right.
+del todo|I don't like it at all.
+carne de res|We ate beef with rice for lunch.
+reunión|The meeting starts at nine.
+hay|There are three books on the table.
+en silencio|Please keep your phone muted in class.
+guarnición|The side dish was fried potatoes.
+tener|I have two brothers and one sister.
+hacer|I make breakfast every morning.
+ir|We go to school by bus.
+venir|Can you come to my house tomorrow?
+ver|I can see the mountains from here.
+mirar|Look at that beautiful bird.
+oír|I can hear music in the street.
+escuchar|I listen to music when I study.
+hablar|She can speak three languages.
+decir|Please tell me the truth.
+preguntar|I want to ask you a question.
+responder|He did not answer the phone.
+comer|We eat dinner at eight.
+beber|You should drink more water.
+dormir|I sleep seven hours every night.
+correr|He runs in the park every day.
+caminar|I like to walk to work.
+abrir|Please open the window.
+cerrar|Close the door when you leave.
+empezar|The class will start soon.
+terminar|I finish work at six.
+esperar|Wait here, I will be right back.
+buscar|I am looking for my keys.
+encontrar|I can't find my phone.
+dar|Can you give me some water?
+llevar|I carry my laptop in a backpack.
+traer|Bring your notebook tomorrow.
+usar|I use my phone as an alarm.
+necesitar|I need more time to finish.
+querer|I want a glass of juice.
+gustar|I like this song a lot.
+pensar|I think it will rain today.
+saber|I know the answer to that question.
+entender|I don't understand this word.
+aprender|I learn new words every day.
+enseñar|She teaches English at a school.
+estudiar|I study programming at the university.
+leer|I read a book before bed.
+escribir|Please write your name here.
+jugar|The children play in the park.
+trabajar|My father works in a bank.
+vivir|We live in a small city.
+comprar|I want to buy a new computer.
+vender|They sell fruit at the market.
+pagar|Can I pay with my card?
+cambiar|I want to change my password.
+ayudar|Can you help me with my homework?
+llamar|I will call you tonight.
+olvidar|Don't forget your keys.
+recordar|I can't remember his name.
+viajar|I want to travel to Spain.
+llegar|The bus arrives at ten.
+salir|We leave the house at seven.
+cocinar|My mom likes to cook on Sundays.
+casa|My house is near the park.
+coche|His car is very old.
+calle|The street is full of people.
+ciudad|This city is big and noisy.
+escuela|My sister goes to school by bike.
+trabajo|I have a new job in an office.
+tienda|The store closes at nine.
+agua|Please give me a glass of water.
+día|Today is a beautiful day.
+noche|I study at night.
+semana|I have a test next week.
+año|Next year I will finish my degree.
+familia|My family lives in another city.
+madre|My mother cooks very well.
+padre|My father drives a truck.
+amigo|He is my best friend.
+perro|The dog sleeps on the sofa.
+gato|My cat likes to sit by the window.
+pan|I eat bread with butter.
+leche|I drink milk every morning.
+café|I need a cup of coffee.
+desayuno|We have breakfast at seven.
+mesa|The keys are on the table.
+silla|Please sit on that chair.
+puerta|Someone is at the door.
+ventana|Open the window, please.
+libro|This book is very interesting.
+dinero|I don't have enough money.
+grande|They live in a big house.
+pequeño|It is a small village.
+nuevo|I bought a new phone.
+viejo|My grandfather is very old.
+bueno|This is a good idea.
+malo|The weather is bad today.
+fácil|This exercise is easy.
+difícil|English is difficult at first.
+rápido|He is a fast runner.
+feliz|I am happy today.
+triste|The movie was very sad.
+cansado|I am tired after work.
+pero|I want to go, but I can't.
+porque|I stay home because it is raining.
+siempre|She is always on time.
+nunca|I never eat meat.
+ahora|I am busy now.
+hoy|Today I have a test.
+ayer|Yesterday I watched a movie.
+aquí|Put the box here.
+también|I like pizza too.
+después|Call me later, please.
+antes|Wash your hands before eating.
+despertar|I wake up at six every day.
+saltar|The cat can jump very high.
+sentarse|Please sit here next to me.
+levantarse|I stand up when the teacher comes in.
+tomar|Take an umbrella, it might rain.
+poner|Put your bag on the chair.
+amar|I love my family very much.
+odiar|I hate waking up early.
+conocer|I want to meet your sister.
+dibujar|She likes to draw animals.
+cantar|He sings in the shower.
+bailar|We dance at every party.
+morir|The flowers die without water.
+costar|How much does this shirt cost?
+ganar|Our team will win today.
+perder|Don't lose your ticket.
+enviar|I will send you the photo.
+recibir|I receive many emails every day.
+entrar|Please enter the room quietly.
+volver|I will return home at nine.
+limpiar|I clean my room on Saturdays.
+lavar|Wash the dishes after dinner.
+cortar|Cut the bread with a knife.
+romper|Be careful, don't break the glass.
+construir|They build houses near the river.
+elegir|You can choose any color.
+reír|The movie made us laugh.
+llorar|The baby began to cry.
+sonreír|She likes to smile at everyone.
+mentir|It is wrong to lie.
+compartir|I share my notes with my friends.
+mostrar|Show me your homework, please.
+explicar|Can you explain this rule?
+intentar|I will try again tomorrow.
+crecer|Children grow very fast.
+caer|Be careful, you might fall.
+subir|We go up the stairs slowly.
+bajar|Go down to the first floor.
+nadar|I swim every Sunday morning.
+volar|Birds fly south in winter.
+conducir|My brother drives to work.
+pedir|I ask for water at the restaurant.
+parecer|It seems like a good plan.
+sentir|I feel better today.
+extrañar|I miss my friends from school.
+cuidar|I take care of my little brother.
+pueblo|My grandparents live in a small town.
+país|Mexico is a beautiful country.
+universidad|I study at a big university.
+oficina|My office is on the second floor.
+mercado|We buy fruit at the market.
+hospital|The hospital is next to the bank.
+banco|I need to go to the bank.
+parque|The kids play in the park.
+playa|We spent the day at the beach.
+montaña|They climbed the mountain on Sunday.
+río|The river is very long.
+mar|The sea is calm today.
+bosque|We walked through the forest.
+árbol|There is a big tree in my yard.
+flor|She gave me a red flower.
+sol|The sun is very hot today.
+luna|The moon is bright tonight.
+estrella|I can see one star in the sky.
+cielo|The sky is blue today.
+nube|There is a dark cloud over us.
+lluvia|I don't like the rain.
+viento|The wind is very strong today.
+nieve|It rarely snows here, but I love the snow.
+fuego|Don't play with fire.
+tierra|The earth goes around the sun.
+mañana|I drink coffee in the morning.
+tarde|We have lunch in the afternoon.
+mes|There are twelve months in a year.
+hora|The class lasts one hour.
+tiempo|I don't have much time today.
+hermano|My brother plays soccer.
+hermana|My sister is a doctor.
+hijo|Their son is five years old.
+hija|Her daughter loves to draw.
+abuelo|My grandfather tells great stories.
+abuela|My grandmother makes delicious soup.
+tío|My uncle lives in Canada.
+tía|My aunt is a teacher.
+primo|My cousin is coming this weekend.
+vecino|Our neighbor has a big dog.
+niño|The boy is reading a book.
+niña|The girl is playing outside.
+hombre|That man is my teacher.
+mujer|The woman is waiting for the bus.
+gente|There are many people in the street.
+maestro|The teacher gave us homework.
+médico|The doctor says I am fine.
+jefe|My boss is very kind.
+cliente|The customer wants a refund.
+pájaro|A bird is singing outside.
+pez|The fish swims in the lake.
+caballo|The horse runs very fast.
+vaca|The cow gives us milk.
+cerdo|The pig is on the farm.
+queso|I like cheese on my pizza.
+huevo|I eat one egg for breakfast.
+pollo|We had chicken for dinner.
+arroz|I eat rice every day.
+frijoles|My mom makes beans on Sundays.
+sopa|The soup is too hot.
+ensalada|I want a salad for lunch.
+fruta|I eat fruit after lunch.
+manzana|I eat an apple every day.
+naranja|She drinks orange juice.
+plátano|I eat a banana at breakfast.
+uva|This grape is very sweet.
+fresa|I love strawberry ice cream.
+verdura|You should eat more vegetables.
+papa|I want a baked potato.
+cebolla|Cut the onion into small pieces.
+azúcar|I don't take sugar in my coffee.
+sal|Add a little salt to the soup.
+té|Would you like some tea?
+jugo|I want a glass of juice.
+cerveza|He ordered a cold beer.
+almuerzo|We have lunch at noon.
+cena|What's for dinner tonight?
+postre|I want chocolate cake for dessert.
+cama|My bed is very comfortable.
+pared|There is a clock on the wall.
+techo|The roof of the house is red.
+cocina|My mother is in the kitchen.
+baño|The bathroom is down the hall.
+sala|We watch TV in the living room.
+cuarto|My room is small but cozy.
+llave|I lost my key.
+cuaderno|I write my words in a notebook.
+lápiz|Can I borrow your pencil?
+papel|I need a sheet of paper.
+computadora|My computer is very fast.
+teléfono|Your phone is ringing.
+cámara|I bought a new camera.
+reloj|My watch is five minutes late.
+mochila|My backpack is very heavy.
+maleta|I packed my suitcase last night.
+tarjeta|Do you accept this card?
+boleto|I bought a ticket for the show.
+carta|I wrote a letter to my friend.
+foto|She took a photo of the beach.
+mapa|Look at the map to find the hotel.
+regalo|I bought a gift for my mom.
+juguete|The baby loves this toy.
+espejo|She looked at herself in the mirror.
+cuchillo|Be careful with that knife.
+cuchara|I need a spoon for the soup.
+tenedor|Use a fork to eat the salad.
+plato|Put the plate on the table.
+vaso|I want a glass of cold water.
+taza|He drinks coffee from a big cup.
+botella|Please bring me a bottle of water.
+caja|The box is empty.
+ropa|I need to wash my clothes.
+camisa|He is wearing a white shirt.
+pantalones|These pants are too long.
+zapatos|I need new shoes for school.
+sombrero|He wears a hat in the sun.
+vestido|She wore a red dress.
+abrigo|Take your coat, it is cold.
+cabeza|My head hurts a little.
+cara|Wash your face before bed.
+ojo|She has green eyes. Close your left eye.
+oreja|The rabbit has long ears.
+nariz|My nose is cold.
+boca|Open your mouth, please.
+diente|I brush my teeth after every meal.
+mano|Raise your hand if you know.
+dedo|I cut my finger with a knife.
+brazo|He broke his arm last year.
+pierna|My leg hurts after the run.
+pie|My foot is cold.
+corazón|She has a big heart.
+espalda|My back hurts today.
+cabello|She has long black hair.
+cuerpo|Exercise is good for the body.
+alto|My brother is very tall.
+bajo|The table is too low. She is short.
+largo|The river is very long.
+corto|This movie is short.
+joven|She is young but very smart.
+mejor|This is the best pizza in town.
+peor|Today was the worst day of my week.
+bonito|What a pretty garden!
+feo|That building is ugly.
+lento|The internet is very slow today.
+caliente|Be careful, the soup is hot.
+frío|The water is too cold.
+enojado|He is angry because he lost.
+ocupado|I am busy this morning.
+libre|Are you free on Saturday?
+lleno|The bus is full of people.
+vacío|The fridge is empty.
+limpio|My room is clean.
+sucio|The floor is dirty.
+fuerte|He is strong and fast.
+débil|The signal is weak here.
+rico|This cake is delicious. He is a rich man.
+pobre|The poor dog was lost.
+caro|This phone is too expensive.
+barato|The tickets are cheap today.
+cerca|My school is near my house.
+lejos|The beach is far from here.
+importante|This test is important.
+diferente|My phone is different from yours.
+mismo|We have the same teacher.
+todo|I ate all the cake.
+mucho|I have a lot of homework.
+poco|There is little water left.
+a veces|Sometimes I walk to school.
+todavía|I am still at work.
+ya|I already finished my homework.
+allá|Your keys are over there.
+dónde|Where do you live?
+cuándo|When does the class start?
+cómo|How do you say this in English?
+quién|Who is that man?
+qué|What is your name?
+por qué|Why are you late?
+entre|The bank is between the school and the park.
+sin|I drink coffee without sugar.
+con|I live with my parents.
+sobre|The book is about animals.
+durante|I read during the trip.
+hasta|I work until six.
+desde|I have lived here since 2020.
+casi|I am almost ready.
+solo|I have only one brother.
+tal vez|Maybe we can go tomorrow.
+dentro|The keys are inside the bag.
+fuera|The kids are playing outside.
+arriba|The books are up on the shelf.
+abajo|The cat is down in the garden.
+adelante|Go forward two blocks.
+atrás|The car is behind the house.
+algo|I want something to eat.
+alguien|Someone is knocking at the door.
+nada|There is nothing in the box.
+nadie|Nobody knows the answer.
+cada|I study every day.
+otra vez|Please say it again.
+rojo|She has a red bag.
+azul|The sea is blue.
+verde|The grass is green.
+amarillo|I like the yellow flowers.
+negro|He has a black cat.
+blanco|The snow is white.
+gris|The sky is gray today.
+morado|She wore a purple dress.
+marrón|He has brown eyes.
+uno|I have one brother.
+dos|I have two sisters.
+tres|There are three apples on the table.
+cuatro|My car has four doors.
+cinco|The class starts in five minutes.
+seis|I wake up at six.
+siete|There are seven days in a week.
+ocho|The movie starts at eight.
+nueve|I have nine books.
+diez|Count from one to ten.
+cien|The book costs one hundred pesos.
+mil|The city has a thousand years of history.
+lunes|On Monday I have English class.
+martes|Tuesday is my busiest day.
+miércoles|We have a test on Wednesday.
+jueves|I play soccer on Thursday.
+viernes|Friday is my favorite day.
+sábado|We go to the market on Saturday.
+domingo|I rest on Sunday.
+vacaciones|We are on vacation next week.
+fiesta|The party starts at eight.
+juego|This game is very fun.
+música|I listen to music every day.
+canción|This song is my favorite.
+película|We watched a movie last night.
+deporte|Soccer is my favorite sport.
+equipo|Our team won the game.
+problema|I have a problem with my phone.
+pregunta|I have one question.
+respuesta|I know the answer.
+verdad|Tell me the truth.
+historia|She told us a funny story.
+vida|Life is beautiful.
+amor|Love is more important than money.
+miedo|I have fear of the dark.
+suerte|Good luck on your test!
+sueño|I had a strange dream last night.
+palabra|I learned a new word today.
+nombre|What is your name?
+número|What is your phone number?
+lugar|This is a quiet place.
+cosa|Don't forget your things.
+manera|This is the best way to learn.
+vez|This is my first time here.
+parte|This is the best part of the movie.`;
+const EX={};EXR.split("\n").forEach(l=>{const i=l.indexOf("|");EX[l.slice(0,i)]=l.slice(i+1)});
+const W=RAW.trim().split("\n").map(l=>{const i=l.indexOf("=");return{es:l.slice(0,i).trim(),en:l.slice(i+1).split("/").map(s=>s.trim())}}).filter(w=>w.es&&w.en[0]);
+const NEED=2,KEY="practica-ingles-v1";
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();
+const $=id=>document.getElementById(id);
+let left={};
+try{left=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+W.forEach(w=>{if(!(w.es in left))left[w.es]=NEED});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(left))}catch(e){}};
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let q=[],cur=null,fb=false,lastOk=false,streak=0,GOAL=10,AC;
+function beep(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;(ok?[[660,0],[880,.12]]:[[220,0],[165,.16]]).forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?"sine":"sawtooth";o.frequency.value=f;g.gain.setValueAtTime(.15,t+d);g.gain.exponentialRampToValueAtTime(.001,t+d+.2);o.connect(g);g.connect(AC.destination);o.start(t+d);o.stop(t+d+.22)})}catch(e){}}
+function build(){q=shuffle(W.filter(w=>left[w.es]>0))}
+function stats(){$("cnt").textContent="Racha: "+streak;$("bar").firstElementChild.style.width=Math.min(100,100*streak/GOAL)+"%"}
+function show(){
+  fb=false;const c=$("card");c.className="";$("in").value="";$("in").disabled=false;
+  $("go").textContent="COMPROBAR";$("go").disabled=true;stats();
+  if(!q.length){cur=null;c.textContent="¡Lista completada!";$("in").disabled=true;return}
+  cur=q[0];c.textContent=cur.es;$("in").focus();
+}
+function check(){
+  if(fb){q.shift();if(left[cur.es]>0)place(cur,lastOk?40:10,lastOk?20:6);show();return}
+  const a=norm($("in").value);if(!a)return;
+  const ok=cur.en.some(x=>norm(x)===a),c=$("card");
+  lastOk=ok;streak=ok?streak+1:0;beep(ok);
+  if(ok){left[cur.es]--;c.className="ok";c.textContent=cur.en[0];if(EX[cur.es]){const s=document.createElement("small");s.textContent=EX[cur.es];c.append(s)}}
+  else{c.className="no";c.innerHTML="";c.append(cur.en[0]);const s=document.createElement("small");s.textContent="Tu respuesta: "+$("in").value.trim()+". Volverá a salir.";c.append(s)}
+  save();stats();fb=true;$("in").disabled=true;$("go").disabled=false;$("go").textContent="SIGUIENTE";$("go").focus();
+}
+function place(w,min,sp){q.splice(Math.min(q.length,min+Math.floor(Math.random()*sp)),0,w)}
+$("in").addEventListener("input",()=>{$("go").disabled=!$("in").value.trim()});
+$("in").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check()}});
+$("go").addEventListener("click",check);
+build();show();
+</script></body></html>
