@@ -3,9 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Traduce las palabras</title>
 <style>
-:root{--bg:#0f1a1f;--card:#16252c;--tx:#f2f6f7;--mut:#8a9ba3;--bd:#2c4048;--ok:#7ed321;--bl:#1cb0f6;--rd:#ff5a5f;--off:#2a3b43;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f4f8fa;--card:#fff;--tx:#14262d;--mut:#5d7078;--bd:#c9d6dc;--ok:#3f9b0b;--off:#dbe5e9}}
-:root[data-theme="light"]{--bg:#f4f8fa;--card:#fff;--tx:#14262d;--mut:#5d7078;--bd:#c9d6dc;--ok:#3f9b0b;--off:#dbe5e9}
+:root{--bg:#0f1a1f;--card:#16252c;--tx:#f2f6f7;--mut:#8a9ba3;--bd:#2c4048;--ok:#EBC66B;color-scheme:dark;--bl:#1cb0f6;--rd:#ff5a5f;--off:#2a3b43;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column;padding:16px;box-sizing:border-box;max-width:520px;margin:0 auto}
 header{display:flex;justify-content:space-between;align-items:baseline}
@@ -19,17 +17,54 @@ main{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;m
 #card.ok{border-color:var(--ok);color:var(--ok)}
 #card.no{border-color:var(--rd);color:var(--rd)}
 input{width:100%;box-sizing:border-box;font-size:1.05rem;padding:12px;border-radius:10px;border:2px solid var(--bl);background:var(--card);color:var(--tx);outline:none}
-button{font:inherit;font-weight:700;letter-spacing:.04em;padding:13px;border:0;border-radius:10px;background:var(--ok);color:#10200a;cursor:pointer}
+button{font:inherit;font-weight:700;letter-spacing:.04em;padding:13px;border:0;border-radius:10px;background:var(--ok);color:#2b2106;cursor:pointer}
 button:disabled{background:var(--off);color:var(--mut);cursor:default}
 button.sec{background:none;color:var(--mut);font-weight:400;padding:6px}
+[hidden]{display:none!important}
+#home{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+#home h1{font-size:2.2rem;text-align:center}
+#home p{color:var(--mut);text-align:center;line-height:1.5;margin:0 0 8px}
+.opt{background:var(--ok);color:#2b2106;border:0;border-radius:14px;padding:16px;font-size:1.1rem;text-align:center;align-self:center;width:75%;max-width:300px}
+.opt small{display:block;font-weight:500;color:#2b2106;opacity:.7;font-size:.8rem;margin-top:2px;letter-spacing:0}
+#game{flex:1;display:flex;flex-direction:column;min-height:0}
+header{align-items:center}
+#lv{display:flex;gap:8px}
+#lv button{flex:1;background:var(--card);color:var(--mut);border:2px solid var(--bd);border-radius:10px;padding:10px}
+#lv button.on{border-color:var(--ok);color:var(--ok)}
+#kb{font-size:.85rem;color:var(--mut);margin-bottom:6px}
+.kt{display:flex;justify-content:space-between}
+.pb{height:6px;background:var(--off);border-radius:3px;margin-top:6px;overflow:hidden}
+.pb i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+html{-webkit-tap-highlight-color:transparent}
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+button:focus{outline:none}
+button:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+#lv button{min-height:44px}
+.kr{display:flex;align-items:center;gap:8px}
+#rk{width:36px;height:36px;padding:0;display:flex;align-items:center;justify-content:center;background:none;color:var(--mut);border:1px solid var(--bd);border-radius:50%}
+#rk.arm{color:var(--rd);border-color:var(--rd)}
+#card{min-height:170px}
+#card small.t{font-size:1rem;letter-spacing:.04em;margin-top:8px}
 </style></head><body>
-<header><h1>Traduce las palabras</h1><span id="cnt"></span></header>
+<section id="home">
+<h1>English Words</h1>
+<p>Contamos con un vocabulario de <b id="tot"></b> palabras por ahora, con las que puedes expandir tu vocabulario en inglés.<br>Página en desarrollo creada por GaPr0555, hecha con ayuda de Claude.</p>
+<div id="lv"><button data-l="1">Nivel 1</button><button data-l="2">Nivel 2</button><button data-l="3">Nivel 3</button></div>
+<div id="kb"><div class="kt"><span>Nivel de palabras conocidas</span><span class="kr"><button id="rk" title="Reiniciar conteo" aria-label="Reiniciar conteo"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></svg></button><b id="kn"></b></span></div><div class="pb"><i></i></div></div>
+<button class="opt" data-s="verbos">Verbos<small></small></button>
+<button class="opt" data-s="hogar">Hogar<small></small></button>
+<button class="opt" data-s="comida">Comida<small></small></button>
+<button class="opt" data-s="azar">Azar<small></small></button>
+</section>
+<section id="game" hidden>
+<header><button id="mn" class="sec">☰ Menú</button><span id="cnt"></span></header>
 <div id="bar"><i></i></div>
 <main>
 <div id="card"></div>
 <input id="in" placeholder="Escribe en inglés" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
 <button id="go" disabled>COMPROBAR</button>
 </main>
+</section>
 <script>
 /* LISTA DE PALABRAS: una por línea, español=inglés (alternativas separadas por /).
    Para actualizarla, agrega o quita líneas. Las palabras nuevas se practican 2 veces. */
@@ -37,7 +72,7 @@ const RAW=`mesera=waitress
 increíble=incredible/amazing
 pantalla=screen
 otro=other/another
-creo=believe/think
+creo=believe/think/i think/i believe
 del todo=at all/entirely
 carne de res=beef
 reunión=meeting
@@ -74,7 +109,7 @@ buscar=look for/search
 encontrar=find
 dar=give
 tomar=take/drink
-llevar=carry/take
+llevar=carry/take/wear
 traer=bring
 poner=put
 usar=use
@@ -114,7 +149,7 @@ olvidar=forget
 recordar=remember
 viajar=travel
 llegar=arrive
-salir=leave/go out
+salir=leave/go out/exit
 entrar=enter
 volver=return/come back
 cocinar=cook
@@ -157,7 +192,7 @@ oficina=office
 tienda=store/shop
 mercado=market
 hospital=hospital
-banco=bank
+banco=bank/bench
 parque=park
 playa=beach
 montaña=mountain
@@ -184,7 +219,7 @@ tarde=afternoon/late/evening
 semana=week
 mes=month
 año=year
-hora=hour
+hora=hour/time
 tiempo=time/weather
 familia=family
 madre=mother
@@ -254,7 +289,7 @@ techo=ceiling/roof
 cocina=kitchen
 baño=bathroom
 sala=living room
-cuarto=room
+cuarto=room/bedroom
 llave=key
 libro=book
 cuaderno=notebook
@@ -269,7 +304,7 @@ maleta=suitcase
 dinero=money
 tarjeta=card
 boleto=ticket
-carta=letter
+carta=letter/menu/card
 foto=photo/picture
 mapa=map
 regalo=gift/present
@@ -309,21 +344,21 @@ cuerpo=body
 grande=big/large
 pequeño=small/little
 alto=tall/high
-bajo=short/low
+bajo=short/low/under/below
 largo=long
 corto=short
 nuevo=new
 viejo=old
 joven=young
-bueno=good
+bueno=good/nice
 malo=bad
 mejor=better/best
 peor=worse/worst
-bonito=pretty/beautiful
+bonito=pretty/beautiful/nice
 feo=ugly
 fácil=easy
 difícil=difficult/hard
-rápido=fast/quick
+rápido=fast/quick/quickly
 lento=slow
 caliente=hot
 frío=cold
@@ -343,14 +378,14 @@ rico=rich/delicious
 pobre=poor
 caro=expensive
 barato=cheap
-cerca=near/close
-lejos=far
+cerca=near/close/nearby
+lejos=far/far away
 importante=important
 diferente=different
-mismo=same
-todo=all/everything
-mucho=much/a lot/many
-poco=little/few
+mismo=same/self
+todo=all/everything/whole
+mucho=much/a lot/many/lots
+poco=little/few/not much
 pero=but
 porque=because
 también=also/too
@@ -363,37 +398,37 @@ ayer=yesterday
 después=after/later/afterwards
 antes=before
 todavía=still/yet
-ya=already
-aquí=here
-allá=there
+ya=already/now
+aquí=here/over here
+allá=there/over there
 dónde=where
 cuándo=when
 cómo=how
 quién=who
-qué=what
+qué=what/which
 por qué=why
 entre=between/among
 sin=without
 con=with
-sobre=about/over/on
-durante=during
-hasta=until
+sobre=about/over/on/above/upon
+durante=during/for
+hasta=until/till/up to/even
 desde=since/from
-casi=almost
-solo=only/alone
+casi=almost/nearly
+solo=only/alone/just
 tal vez=maybe/perhaps
-dentro=inside
-fuera=outside
-arriba=up/above
-abajo=down/below
+dentro=inside/within/in
+fuera=outside/out
+arriba=up/above/upstairs
+abajo=down/below/downstairs
 adelante=forward/ahead
 atrás=behind/back
-algo=something
+algo=something/anything
 alguien=someone/somebody
 nada=nothing
 nadie=nobody/no one
 cada=each/every
-otra vez=again
+otra vez=again/once more
 rojo=red
 azul=blue
 verde=green
@@ -444,10 +479,10 @@ palabra=word
 nombre=name
 número=number
 lugar=place
-cosa=thing
+cosa=thing/stuff
 manera=way
-vez=time/occasion
-parte=part`;
+vez=time/occasion/turn
+parte=part/piece/section`;
 /* ORACIONES DE EJEMPLO: palabra en español|oración en inglés */
 const EXR=`mesera|The waitress brought us the menu.
 increíble|The view from the top is incredible.
@@ -863,39 +898,860 @@ lugar|This is a quiet place.
 cosa|Don't forget your things.
 manera|This is the best way to learn.
 vez|This is my first time here.
-parte|This is the best part of the movie.`;
+parte|This is the best part of the movie.
+recámara|My bedroom is upstairs.
+almohada|I need a softer pillow.
+toalla|Please bring me a clean towel.
+cortinas|Close the curtains, please.
+alfombra|The rug is very soft.
+cobija|I need another blanket tonight.
+sábana|I changed the sheet this morning.
+colchón|This mattress is very firm.
+edredón|The duvet keeps me warm.
+mesita de noche|My phone is on the nightstand.
+armario|My clothes are in the closet.
+cajón|The keys are in the drawer.
+sofá|We sleep on the sofa sometimes.
+sillón|Grandpa reads in his armchair.
+librero|The bookshelf is full of books.
+estante|Put the box on the shelf.
+lámpara|Turn on the lamp, please.
+foco|The light bulb burned out.
+enchufe|Is there an outlet near the bed?
+interruptor|Press the switch to turn on the light.
+escalera|Be careful on the stairs.
+pasillo|The bathroom is down the hallway.
+azotea|We watched the stars from the rooftop.
+patio|The kids play in the yard.
+jardín|My mom grows flowers in the garden.
+cochera|He parked the car in the garage.
+buzón|The mail is in the mailbox.
+timbre|Ring the doorbell, please.
+cerradura|The lock is broken.
+manija|The door handle is loose.
+ventilador|Turn on the fan, it's hot.
+refrigerador|The fridge is almost empty.
+estufa|Don't touch the stove, it's hot.
+horno|The oven is already hot.
+microondas|Heat the soup in the microwave.
+licuadora|I use the blender for smoothies.
+tostadora|The toaster is on the counter.
+lavadora|The washing machine is very loud.
+secadora|The dryer is not working.
+plancha|I need an iron for this shirt.
+escoba|Take the broom and sweep the floor.
+trapeador|Use the mop to clean the floor.
+recogedor|Pick up the dirt with the dustpan.
+cubeta|Fill the bucket with water.
+esponja|I wash the dishes with a sponge.
+jabón|Wash your hands with soap.
+champú|I ran out of shampoo.
+cepillo de dientes|I need a new toothbrush.
+pasta de dientes|The toothpaste is almost finished.
+regadera|The shower is very hot.
+tina|I like a long bath in the bathtub.
+lavabo|Wash your hands in the sink.
+inodoro|The toilet is clogged.
+papel higiénico|We need more toilet paper.
+basura|Take out the trash, please.
+bote de basura|Put it in the trash can.
+maceta|The flowerpot fell off the balcony.
+florero|She put the flowers in a vase.
+cuadro|There is a painting in the living room.
+marco|I bought a frame for this photo.
+perchero|Hang your coat on the coat rack.
+tendedero|The clothes are drying on the clothesline.
+gancho|I need a hanger for this shirt.
+comedor|We eat in the dining room.
+sótano|We keep old boxes in the basement.
+ático|There are old toys in the attic.
+chimenea|We sit by the fireplace in winter.
+alacena|The rice is in the pantry.
+piso|The floor is wet.
+televisión|Turn off the television, please.
+control remoto|Where is the remote control?
+vela|She lit a candle.
+cerillos|Do you have matches?
+encendedor|I need a lighter for the candle.
+tijeras|Pass me the scissors, please.
+martillo|He hit the nail with a hammer.
+clavo|I need a nail to hang the picture.
+tornillo|This screw is too short.
+destornillador|Give me the screwdriver.
+pintura|We need more paint for the wall.
+portón|Close the gate when you leave.
+reja|There is a fence around the house.
+calentador|The water heater is broken.
+aire acondicionado|Turn on the air conditioner, please.
+extintor|Every house should have a fire extinguisher.
+alarma|The alarm goes off at six.
+cojín|This cushion is very comfortable.
+funda|I washed the pillowcase.
+mantel|Put the tablecloth on the table.
+servilleta|Can I have a napkin, please?
+sartén|Heat the frying pan first.
+olla|The pot is on the stove.
+cacerola|Cook the sauce in a saucepan.
+tazón|I eat cereal in a big bowl.
+jarra|Bring a pitcher of water.
+colador|Use a strainer for the pasta.
+rallador|Use the grater for the cheese.
+abrelatas|Where is the can opener?
+sacacorchos|I need a corkscrew to open the wine.
+tabla de cortar|Cut the onions on the cutting board.
+cafetera|The coffee maker is broken.
+lavaplatos|Put the plates in the dishwasher.
+fregadero|The dishes are in the kitchen sink.
+mesa de centro|The magazines are on the coffee table.
+escritorio|My desk is next to the window.
+repisa|The photos are on the shelf.
+tapete|Wipe your feet on the mat.
+cortina de baño|The shower curtain is dirty.
+peine|I forgot my comb.
+cepillo|Use a brush for your hair.
+secador de pelo|I dry my hair with a hair dryer.
+báscula|The scale is in the bathroom.
+botiquín|The first aid kit is in the kitchen.
+cable|This cable is too short.
+extensión|I need an extension cord.
+pila|The battery is dead.
+linterna|Bring a flashlight, it is dark.
+barandal|Hold the railing on the stairs.
+balcón|We have breakfast on the balcony.
+terraza|The terrace has a great view.
+cuna|The baby is sleeping in the crib.
+litera|My brothers sleep in a bunk bed.
+mantequilla|I put butter on my bread.
+harina|We need flour to make bread.
+pimienta|Add a little pepper to the soup.
+aceite|Heat the oil in the pan.
+vinagre|I put vinegar on my salad.
+miel|I like honey in my tea.
+levadura|Bread needs yeast to rise.
+canela|I love cinnamon in my coffee.
+vainilla|I want vanilla ice cream.
+ajo|Add two cloves of garlic.
+jengibre|I drink ginger tea when I'm sick.
+perejil|Add some parsley to the soup.
+cilantro|I like cilantro on my tacos.
+albahaca|Fresh basil goes well with tomato.
+orégano|Put a little oregano on the pizza.
+chile|This chili is very spicy.
+crema|I like cream in my coffee.
+yogur|I eat yogurt for breakfast.
+tocino|I want bacon and eggs.
+jamón|I made a ham sandwich.
+salchicha|He ate a sausage for lunch.
+cordero|We had lamb for dinner.
+pavo|We eat turkey at Christmas.
+atún|I made a tuna sandwich.
+camarón|I ordered shrimp tacos.
+pera|This pear is very juicy.
+durazno|I want a peach for dessert.
+sandía|The watermelon is very sweet.
+melón|We had melon for breakfast.
+piña|I love pineapple on my pizza.
+limón|Add a little lemon juice.
+aguacate|I want avocado on my toast.
+cereza|There is a cherry on top.
+ciruela|This plum is very sweet.
+frambuesa|I put raspberry jam on my toast.
+arándano|I like blueberry pancakes.
+coco|I drank coconut water on the beach.
+higo|A fig is a sweet fruit.
+toronja|I drink grapefruit juice in the morning.
+zanahoria|Rabbits love carrots.
+lechuga|Add some lettuce to the sandwich.
+espinaca|Spinach is very healthy.
+brócoli|The kids don't like broccoli.
+coliflor|I made cauliflower soup.
+pepino|I put cucumber in my salad.
+calabacín|I cooked zucchini for dinner.
+calabaza|We made pumpkin soup.
+maíz|I like corn on the cob.
+chícharos|I have peas and carrots.
+apio|Cut the celery into small pieces.
+betabel|The beet turns everything red.
+rábano|Add a radish to the salad.
+champiñón|I like mushroom pizza.
+berenjena|She cooked eggplant with cheese.
+repollo|Cabbage is good for tacos.
+espárrago|Asparagus is great with fish.
+pimiento|Cut the bell pepper into strips.
+lentejas|I make lentils every week.
+garbanzo|I put chickpeas in my salad.
+nuez|Add a walnut to the cake.
+almendra|I eat almonds as a snack.
+cacahuate|He is allergic to peanuts.
+avena|I eat oats every morning.
+fideos|I like noodles with soup.
+batir|Whisk the eggs in a bowl.
+mezclar|Mix the flour and sugar.
+hornear|Bake the cake for an hour.
+freír|Fry the eggs in a pan.
+hervir|Boil the water first.
+pelar|Peel the potatoes, please.
+rallar|Grate the cheese over the pasta.
+pescado|We had fish for lunch.
+carne|I don't eat much meat.
+tomate|Cut the tomato into slices.
+mango|The mango is ripe.
+refresco|I want a cold soda.
+vino|He ordered a glass of wine.
+pastel|She baked a chocolate cake.
+galleta|I want a cookie with my milk.
+helado|I want chocolate ice cream.
+chocolate|I love dark chocolate.
+dulce|The kids want some candy.
+mermelada|I put jam on my toast.
+cereal|I eat cereal every morning.
+tortilla|I made a cheese tortilla.
+hamburguesa|I ordered a hamburger with fries.
+pizza|Let's order a pizza tonight.
+sándwich|I made a sandwich for lunch.
+papas fritas|I want french fries with my burger.
+palomitas|Let's eat popcorn at the movies.
+mayonesa|I don't like mayonnaise.
+mostaza|I like mustard on my hot dog.
+salsa|This sauce is very good.
+catsup|Do you want ketchup with your fries?
+pasta|We had pasta for dinner.
+pan tostado|I eat toast for breakfast.
+salmón|We grilled salmon for dinner.
+carne molida|I used ground beef for the tacos.
+costilla|I ordered a pork rib.
+filete|I want a steak with potatoes.
+chuleta|He ate a pork chop.
+pechuga|I grilled a chicken breast.
+muslo|I like the chicken thigh.
+mariscos|We ate seafood at the beach.
+pulpo|The octopus has eight arms.
+calamar|I ordered fried squid.
+pistache|I love pistachio ice cream.
+pasas|I put raisins in my oatmeal.
+dátil|A date is a very sweet fruit.
+mora|I picked a blackberry from the bush.
+guayaba|I like guava juice.
+granada|A pomegranate has many seeds.
+mandarina|I peeled a tangerine.
+exprimir|Squeeze the lemon over the fish.
+revolver|Stir the soup slowly.
+rebanar|Slice the bread, please.
+machacar|Mash the potatoes with butter.
+asar|Roast the chicken for two hours.
+sazonar|Season the meat with salt.
+marinar|Marinate the chicken overnight.
+derretir|Melt the butter in a pan.
+amasar|Knead the dough for ten minutes.
+probar|Taste the soup before serving.`;
 const EX={};EXR.split("\n").forEach(l=>{const i=l.indexOf("|");EX[l.slice(0,i)]=l.slice(i+1)});
-const W=RAW.trim().split("\n").map(l=>{const i=l.indexOf("=");return{es:l.slice(0,i).trim(),en:l.slice(i+1).split("/").map(s=>s.trim())}}).filter(w=>w.es&&w.en[0]);
-const NEED=2,KEY="practica-ingles-v1";
+const VERBS=`ser o estar=be,was|were,been
+tener=have,had,had
+hacer=do,did,done
+ir=go,went,gone
+venir=come,came,come
+ver=see,saw,seen
+decir=say,said,said
+dar=give,gave,given
+tomar=take,took,taken
+saber=know,knew,known
+pensar=think,thought,thought
+comer=eat,ate,eaten
+beber=drink,drank,drunk
+dormir=sleep,slept,slept
+escribir=write,wrote,written
+leer=read,read,read
+hablar=speak,spoke,spoken
+romper=break,broke,broken
+elegir=choose,chose,chosen
+olvidar=forget,forgot,forgotten
+comprar=buy,bought,bought
+vender=sell,sold,sold
+traer=bring,brought,brought
+encontrar=find,found,found
+perder=lose,lost,lost
+ganar=win,won,won
+sentir=feel,felt,felt
+guardar=keep,kept,kept
+irse=leave,left,left
+correr=run,ran,run
+empezar=begin,began,begun
+cantar=sing,sang,sung
+nadar=swim,swam,swum
+volar=fly,flew,flown
+conducir=drive,drove,driven
+construir=build,built,built
+enseñar=teach,taught,taught
+aprender=learn,learned|learnt,learned|learnt
+oír=hear,heard,heard
+sentarse=sit,sat,sat
+ponerse de pie=stand,stood,stood
+despertar=wake,woke,woken
+caer=fall,fell,fallen
+crecer=grow,grew,grown
+dibujar=draw,drew,drawn
+pagar=pay,paid,paid
+enviar=send,sent,sent
+gastar=spend,spent,spent
+cortar=cut,cut,cut
+poner=put,put,put
+lanzar=throw,threw,thrown
+atrapar=catch,caught,caught
+prestar=lend,lent,lent
+significar=mean,meant,meant
+reunirse=meet,met,met
+esconder=hide,hid,hidden
+morder=bite,bit,bitten
+sostener=hold,held,held
+trabajar=work,worked,worked
+jugar=play,played,played
+ayudar=help,helped,helped
+caminar=walk,walked,walked
+querer=want,wanted,wanted
+cocinar=cook,cooked,cooked
+dejar entrar=let,let,let
+apostar=bet,bet,bet
+soplar=blow,blew,blown
+alimentar=feed,fed,fed
+pelear=fight,fought,fought
+congelar=freeze,froze,frozen
+obtener=get,got,got|gotten
+colgar=hang,hung,hung
+herir=hurt,hurt,hurt
+montar=ride,rode,ridden
+sonar=ring,rang,rung
+levantarse=rise,rose,risen
+fijar=set,set,set
+agitar=shake,shook,shaken
+brillar=shine,shone,shone
+disparar=shoot,shot,shot
+cerrar de golpe=shut,shut,shut
+hundirse=sink,sank,sunk
+resbalar=slide,slid,slid
+girar=spin,spun,spun
+dividir=split,split,split
+esparcir=spread,spread,spread
+robar=steal,stole,stolen
+pegar=stick,stuck,stuck
+golpear=hit,hit,hit
+jurar=swear,swore,sworn
+rasgar=tear,tore,torn
+contar=tell,told,told
+entender=understand,understood,understood
+vestir=wear,wore,worn
+dejar caer=drop,dropped,dropped
+abrir=open,opened,opened
+cerrar=close,closed,closed
+llamar=call,called,called
+preguntar=ask,asked,asked
+necesitar=need,needed,needed
+usar=use,used,used
+mirar=look,looked,looked
+escuchar=listen,listened,listened
+vivir=live,lived,lived
+amar=love,loved,loved
+bailar=dance,danced,danced
+viajar=travel,traveled|travelled,traveled|travelled
+llegar=arrive,arrived,arrived
+cambiar=change,changed,changed
+esperar=wait,waited,waited
+estudiar=study,studied,studied
+limpiar=clean,cleaned,cleaned
+lavar=wash,washed,washed
+terminar=finish,finished,finished
+visitar=visit,visited,visited
+mostrar=show,showed,shown
+pedir prestado=borrow,borrowed,borrowed`;
+const HOGAR=`casa=house/home
+recámara=bedroom
+baño=bathroom
+cama=bed
+almohada=pillow
+toalla=towel
+cortinas=curtains
+alfombra=rug/carpet
+cobija=blanket
+sábana=sheet/bedsheet
+colchón=mattress
+edredón=duvet/comforter
+mesita de noche=nightstand/bedside table
+armario=closet/wardrobe/cupboard
+cajón=drawer
+sofá=sofa/couch
+sillón=armchair
+librero=bookshelf/bookcase
+estante=shelf
+lámpara=lamp
+foco=light bulb/bulb
+enchufe=outlet/socket/plug
+interruptor=switch/light switch
+escalera=stairs/staircase/ladder
+pasillo=hallway/corridor
+azotea=rooftop/roof
+patio=yard/patio/backyard
+jardín=garden
+cochera=garage
+buzón=mailbox
+timbre=doorbell
+cerradura=lock
+manija=door handle/handle/doorknob
+ventilador=fan
+refrigerador=fridge/refrigerator
+estufa=stove
+horno=oven
+microondas=microwave
+licuadora=blender
+tostadora=toaster
+lavadora=washing machine/washer
+secadora=dryer
+plancha=iron
+escoba=broom
+trapeador=mop
+recogedor=dustpan
+cubeta=bucket/pail
+esponja=sponge
+jabón=soap
+champú=shampoo
+cepillo de dientes=toothbrush
+pasta de dientes=toothpaste
+regadera=shower
+tina=bathtub/tub
+lavabo=sink/washbasin
+inodoro=toilet
+papel higiénico=toilet paper
+basura=trash/garbage/rubbish
+bote de basura=trash can/garbage can/bin
+maceta=flowerpot/plant pot/pot
+florero=vase
+cuadro=painting/picture
+marco=frame
+perchero=coat rack
+tendedero=clothesline
+gancho=hanger/hook
+comedor=dining room
+sótano=basement
+ático=attic
+chimenea=fireplace/chimney
+alacena=pantry/cupboard
+puerta=door
+ventana=window
+mesa=table
+silla=chair
+pared=wall
+techo=ceiling
+piso=floor
+cocina=kitchen
+sala=living room
+cuarto=room
+llave=key
+espejo=mirror
+televisión=television/tv/tv set
+control remoto=remote control/remote
+vela=candle
+cerillos=matches
+encendedor=lighter
+tijeras=scissors
+martillo=hammer
+clavo=nail
+tornillo=screw
+destornillador=screwdriver
+pintura=paint
+portón=gate
+reja=fence
+calentador=heater/water heater
+aire acondicionado=air conditioner/air conditioning
+extintor=fire extinguisher
+alarma=alarm
+cojín=cushion
+funda=pillowcase/cover
+mantel=tablecloth
+servilleta=napkin
+sartén=frying pan/pan
+olla=pot
+cacerola=saucepan
+tazón=bowl
+jarra=pitcher/jug
+colador=strainer
+rallador=grater
+abrelatas=can opener
+sacacorchos=corkscrew
+tabla de cortar=cutting board
+cafetera=coffee maker/coffee machine
+lavaplatos=dishwasher
+fregadero=kitchen sink/sink
+mesa de centro=coffee table
+escritorio=desk
+repisa=shelf/ledge
+tapete=mat/rug
+cortina de baño=shower curtain
+peine=comb
+cepillo=brush
+secador de pelo=hair dryer
+báscula=scale
+botiquín=first aid kit/medicine cabinet
+cable=cable/cord/wire
+extensión=extension cord
+pila=battery
+linterna=flashlight
+barandal=railing/handrail
+balcón=balcony
+terraza=terrace
+cuna=crib
+litera=bunk bed
+cuchara=spoon
+tenedor=fork
+cuchillo=knife
+plato=plate/dish
+vaso=glass
+taza=cup
+botella=bottle
+ropa=clothes
+reloj=clock/watch`;
+const COMIDA=`mantequilla=butter
+azúcar=sugar
+harina=flour
+sal=salt
+pimienta=pepper
+aceite=oil
+vinagre=vinegar
+miel=honey
+levadura=yeast
+canela=cinnamon
+vainilla=vanilla
+ajo=garlic
+cebolla=onion
+jengibre=ginger
+perejil=parsley
+cilantro=cilantro/coriander
+albahaca=basil
+orégano=oregano
+chile=chili/chili pepper
+crema=cream
+yogur=yogurt
+tocino=bacon
+jamón=ham
+salchicha=sausage
+cordero=lamb
+pavo=turkey
+atún=tuna
+camarón=shrimp
+fresa=strawberry
+manzana=apple
+pera=pear
+durazno=peach
+sandía=watermelon
+melón=melon/cantaloupe
+piña=pineapple
+limón=lemon/lime
+aguacate=avocado
+cereza=cherry
+ciruela=plum
+frambuesa=raspberry
+arándano=blueberry/cranberry
+coco=coconut
+higo=fig
+toronja=grapefruit
+zanahoria=carrot
+lechuga=lettuce
+espinaca=spinach
+brócoli=broccoli
+coliflor=cauliflower
+pepino=cucumber
+calabacín=zucchini
+calabaza=pumpkin/squash
+maíz=corn
+chícharos=peas
+apio=celery
+betabel=beet/beetroot
+rábano=radish
+champiñón=mushroom
+berenjena=eggplant
+repollo=cabbage
+espárrago=asparagus
+pimiento=bell pepper
+lentejas=lentils
+garbanzo=chickpea
+nuez=walnut/nut
+almendra=almond
+cacahuate=peanut
+avena=oats/oatmeal
+fideos=noodles
+cortar=cut/chop
+batir=whisk/beat
+mezclar=mix
+hornear=bake
+freír=fry
+hervir=boil
+pelar=peel
+rallar=grate
+pan=bread
+leche=milk
+queso=cheese
+huevo=egg
+pollo=chicken
+pescado=fish
+carne=meat
+carne de res=beef
+cerdo=pork/pig
+arroz=rice
+frijoles=beans
+sopa=soup
+ensalada=salad
+fruta=fruit
+verdura=vegetable
+papa=potato
+tomate=tomato
+naranja=orange
+plátano=banana
+uva=grape
+mango=mango
+agua=water
+jugo=juice
+refresco=soda/soft drink
+café=coffee
+té=tea
+cerveza=beer
+vino=wine
+pastel=cake
+galleta=cookie/biscuit
+helado=ice cream
+chocolate=chocolate
+dulce=candy/sweet
+mermelada=jam
+cereal=cereal
+tortilla=tortilla
+hamburguesa=hamburger
+pizza=pizza
+sándwich=sandwich
+papas fritas=french fries/fries/chips
+palomitas=popcorn
+mayonesa=mayonnaise/mayo
+mostaza=mustard
+salsa=sauce/salsa
+catsup=ketchup
+pasta=pasta
+pan tostado=toast
+salmón=salmon
+carne molida=ground beef/minced meat
+costilla=rib
+filete=steak/fillet
+chuleta=chop/cutlet
+pechuga=chicken breast/breast
+muslo=thigh/drumstick
+mariscos=seafood
+pulpo=octopus
+calamar=squid
+pistache=pistachio
+pasas=raisins
+dátil=date
+mora=blackberry
+guayaba=guava
+granada=pomegranate
+mandarina=tangerine/mandarin
+exprimir=squeeze
+revolver=stir
+rebanar=slice
+machacar=mash
+asar=roast/grill
+sazonar=season
+marinar=marinate
+derretir=melt
+amasar=knead
+probar=taste/try
+desayuno=breakfast
+almuerzo=lunch
+cena=dinner/supper
+postre=dessert`;
+const SIMPLE=r=>r.trim().split("\n").map(l=>{const i=l.indexOf("=");return{es:l.slice(0,i).trim(),en:l.slice(i+1).split("/").map(s=>s.trim())}}).filter(w=>w.es&&w.en[0]);
+const TN=["presente","pasado","participio"];
+const VB=VERBS.trim().split("\n").flatMap(l=>{const i=l.indexOf("="),b=l.slice(0,i).trim();return l.slice(i+1).split(",").map((x,k)=>({es:b+" ("+TN[k]+")",en:x.split("|").map(s=>s.trim()),base:b}))});
+const EXV=`ser o estar|I want to be happy.|She was at home.|I have been there.
+tener|I have a dog.|She had a cold.|I have had enough.
+hacer|I do my homework.|I did it yesterday.|I have done it already.
+ir|I go to school.|He went home early.|She has gone to the market.
+venir|Come here, please.|He came late.|They have come back.
+ver|I see a bird.|I saw him yesterday.|I have seen that movie.
+decir|I say hello.|She said no.|He has said it twice.
+dar|I give you my word.|He gave me a gift.|She has given me advice.
+tomar|I take the bus.|She took my pen.|I have taken my medicine.
+saber|I know the answer.|I knew him in school.|I have known her for years.
+pensar|I think it's late.|I thought about you.|I have thought about it.
+comer|I eat fruit.|I ate fruit.|I have eaten fruit.
+beber|I drink water.|I drank water.|I have drunk water.
+dormir|I sleep early.|I slept well.|I have slept enough.
+escribir|I write a letter.|I wrote a letter.|I have written a letter.
+leer|I read every night.|I read it yesterday.|I have read that book.
+hablar|I speak English.|She spoke to me.|I have spoken to him.
+romper|I break a glass.|He broke the window.|The window is broken.
+elegir|I choose the blue one.|She chose the red one.|I have chosen already.
+olvidar|I forget names.|I forgot my keys.|I have forgotten his name.
+comprar|I buy bread.|I bought a book.|I have bought a ticket.
+vender|I sell fruit.|He sold his car.|They have sold the house.
+traer|I bring my lunch.|She brought a cake.|I have brought my book.
+encontrar|I find my keys.|I found my phone.|I have found a job.
+perder|I lose my keys.|He lost the game.|I have lost my wallet.
+ganar|I win every time.|She won the prize.|We have won the game.
+sentir|I feel tired.|I felt happy.|I have felt better.
+guardar|I keep my money safe.|She kept the letter.|I have kept it.
+irse|I leave at six.|She left early.|He has left already.
+correr|I run every day.|He ran fast.|I have run five miles.
+empezar|I begin at nine.|The class began late.|The show has begun.
+cantar|I sing in the shower.|She sang well.|I have sung that song.
+nadar|I swim on Sundays.|He swam in the lake.|I have swum there.
+volar|Birds fly south.|The bird flew away.|The plane has flown.
+conducir|I drive to work.|She drove all night.|I have driven that car.
+construir|They build houses.|He built a boat.|They have built a school.
+enseñar|I teach English.|She taught me math.|He has taught for years.
+aprender|I learn new words.|I learned a lot.|I have learned a lot.
+oír|I hear music.|I heard a noise.|I have heard that song.
+sentarse|I sit here.|She sat down.|I have sat here before.
+ponerse de pie|I stand up.|He stood in line.|I have stood here all day.
+despertar|I wake up at six.|I woke up late.|I have woken up early.
+caer|Leaves fall in autumn.|He fell off his bike.|The leaves have fallen.
+crecer|Kids grow fast.|He grew a lot.|She has grown tall.
+dibujar|I draw animals.|She drew a house.|I have drawn a map.
+pagar|I pay with cash.|He paid the bill.|I have paid already.
+enviar|I send an email.|She sent a letter.|I have sent the photo.
+gastar|I spend too much.|He spent all his money.|I have spent my savings.
+cortar|I cut paper.|She cut her finger.|I have cut the cake.
+poner|I put it here.|She put it away.|I have put it on the table.
+lanzar|I throw the ball.|He threw it far.|I have thrown it away.
+atrapar|I catch the ball.|She caught a fish.|I have caught a cold.
+prestar|I lend him my pen.|She lent me money.|I have lent him my car.
+significar|What does it mean?|It meant a lot.|It has meant a lot to me.
+reunirse|I meet my friends.|We met yesterday.|I have met her before.
+esconder|I hide my gifts.|He hid the key.|The key is hidden.
+morder|Dogs bite.|The dog bit him.|I have been bitten.
+sostener|I hold the door.|She held my hand.|I have held it all day.
+trabajar|I work here.|She worked all day.|I have worked there.
+jugar|I play soccer.|We played yesterday.|I have played that game.
+ayudar|I help my mom.|He helped me.|She has helped us.
+caminar|I walk to school.|We walked home.|I have walked here.
+querer|I want water.|She wanted help.|I have wanted this.
+cocinar|I cook dinner.|She cooked rice.|I have cooked today.
+dejar entrar|Let me in.|She let me go.|I have let him in.
+apostar|I bet ten dollars.|He bet on the team.|I have bet before.
+soplar|I blow out candles.|The wind blew hard.|The wind has blown all day.
+alimentar|I feed the dog.|She fed the cat.|I have fed the birds.
+pelear|They fight a lot.|They fought yesterday.|They have fought again.
+congelar|Water freezes at zero.|The lake froze.|The pipes have frozen.
+obtener|I get good grades.|He got a job.|I have gotten a message.
+colgar|I hang my coat.|She hung the picture.|I have hung the clothes.
+herir|Don't hurt me.|He hurt his leg.|I have hurt my back.
+montar|I ride my bike.|She rode a horse.|I have ridden a camel.
+sonar|The phone rings.|The bell rang.|The bell has rung.
+levantarse|The sun rises early.|The sun rose at six.|The sun has risen.
+fijar|I set the table.|She set the alarm.|I have set the date.
+agitar|Shake the bottle.|He shook my hand.|I have shaken it well.
+brillar|Stars shine at night.|The sun shone all day.|The moon has shone all night.
+disparar|I shoot photos.|He shot the ball.|She has shot a movie.
+cerrar de golpe|Shut the door.|He shut the window.|I have shut it already.
+hundirse|Stones sink in water.|The boat sank.|The ship has sunk.
+resbalar|Kids slide down here.|He slid on the ice.|The box has slid away.
+girar|The wheel spins.|She spun around.|The top has spun for minutes.
+dividir|Split the bill.|We split the cake.|They have split the money.
+esparcir|Spread the butter.|He spread the news.|The news has spread.
+robar|Thieves steal money.|Someone stole my bike.|My bike has been stolen.
+pegar|Stick it to the wall.|The gum stuck to my shoe.|It has stuck there.
+golpear|Don't hit the dog.|He hit the ball.|She has hit it hard.
+jurar|I swear it's true.|He swore to help.|I have sworn to help.
+rasgar|Don't tear the paper.|She tore her shirt.|The page is torn.
+contar|I tell stories.|She told me a joke.|I have told him twice.
+entender|I understand you.|I understood it.|I have understood it now.
+vestir|I wear a coat.|She wore a red dress.|I have worn this shirt.
+dejar caer|I drop my phone.|She dropped her keys.|I have dropped my pen.
+abrir|I open the door.|She opened the box.|I have opened it.
+cerrar|I close the window.|He closed the shop.|I have closed it.
+llamar|I call my mom.|She called me.|I have called twice.
+preguntar|I ask questions.|He asked me.|I have asked him.
+necesitar|I need help.|She needed time.|I have needed this.
+usar|I use a pen.|He used my phone.|I have used it.
+mirar|I look at the sky.|She looked at me.|I have looked everywhere.
+escuchar|I listen to music.|He listened to me.|I have listened to it.
+vivir|I live here.|She lived in Spain.|I have lived here.
+amar|I love my family.|He loved her.|I have loved this song.
+bailar|I dance on Fridays.|They danced all night.|I have danced there.
+viajar|I travel every year.|She traveled to Spain.|I have traveled a lot.
+llegar|I arrive at nine.|He arrived late.|The bus has arrived.
+cambiar|I change my clothes.|She changed her mind.|I have changed jobs.
+esperar|I wait here.|We waited an hour.|I have waited long.
+estudiar|I study at night.|She studied English.|I have studied it.
+limpiar|I clean my room.|He cleaned the kitchen.|I have cleaned it.
+lavar|I wash my hands.|She washed the car.|I have washed it.
+terminar|I finish at six.|He finished his work.|I have finished.
+visitar|I visit my aunt.|We visited Paris.|I have visited there.
+mostrar|I show my ticket.|She showed me the way.|He has shown me.
+pedir prestado|I borrow books.|She borrowed my pen.|I have borrowed it.`;
+EXV.split("\n").forEach(l=>{const p=l.split("|");TN.forEach((t,k)=>{EX[p[0]+" ("+t+")"]=p[k+1]})});
+const cap=x=>x.charAt(0).toUpperCase()+x.slice(1);
+const SETS={verbos:{w:VB,k:"-verbos"},hogar:{w:SIMPLE(HOGAR),k:"-hogar"},comida:{w:SIMPLE(COMIDA),k:"-comida"},azar:{w:SIMPLE(RAW),k:""}};
+const NEED=2,GOAL=10;
 const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();
 const $=id=>document.getElementById(id);
-let left={};
-try{left=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
-W.forEach(w=>{if(!(w.es in left))left[w.es]=NEED});
+const L1=new Set(`tener,hacer,ir,venir,ver,mirar,escuchar,hablar,decir,comer,beber,dormir,correr,caminar,abrir,cerrar,esperar,buscar,dar,usar,querer,gustar,saber,leer,escribir,jugar,trabajar,vivir,comprar,pagar,ayudar,llamar,llegar,salir,entrar,tomar,pensar,preguntar,necesitar,amar,bailar,estudiar,limpiar,lavar,terminar,cambiar,cocinar,ser o estar,casa,coche,calle,ciudad,escuela,trabajo,tienda,agua,día,noche,semana,año,hora,familia,madre,padre,hermano,hermana,hijo,hija,amigo,hombre,mujer,niño,niña,perro,gato,pan,leche,café,desayuno,mesa,silla,puerta,ventana,libro,dinero,cabeza,mano,ojo,boca,grande,pequeño,nuevo,viejo,bueno,malo,fácil,feliz,triste,pero,porque,siempre,nunca,ahora,hoy,ayer,aquí,también,rojo,azul,verde,amarillo,negro,blanco,uno,dos,tres,cuatro,cinco,seis,siete,ocho,nueve,diez,lunes,martes,miércoles,jueves,viernes,sábado,domingo,sol,luna,cama,baño,cocina,cuarto,sala,ropa,camisa,zapatos,pantalones,manzana,naranja,plátano,huevo,queso,pollo,arroz,mucho,poco,todo,hay,otro,con,sin,qué,cómo,dónde,quién,cuándo,por qué,almohada,toalla,pared,techo,piso,llave,espejo,televisión,cuchara,tenedor,cuchillo,plato,vaso,taza,botella,reloj,jabón,escritorio,lámpara,sofá,refrigerador,estufa,jardín,pescado,carne,frijoles,sopa,ensalada,fruta,verdura,papa,tomate,uva,jugo,té,pastel,galleta,helado,chocolate,azúcar,sal,mantequilla,fresa,almuerzo,cena,postre,pizza,hamburguesa,sándwich,refresco,cebolla,zanahoria,lechuga,limón,cerveza,jamón,aceite,recámara`.replace(/\n/g,"").split(","));
+const L3=new Set(`guarnición,increíble,sobre,durante,desde,entre,casi,tal vez,todavía,alguien,nadie,nada,otra vez,dentro,fuera,arriba,abajo,adelante,atrás,mismo,manera,vez,lugar,verdad,suerte,miedo,sueño,historia,equipo,vacaciones,problema,importante,diferente,débil,vacío,ocupado,enojado,extrañar,parecer,cuidar,mentir,compartir,intentar,crecer,explicar,mostrar,elegir,romper,construir,espalda,cabello,cuerpo,reunión,del todo,en silencio,apostar,soplar,alimentar,pelear,congelar,colgar,herir,montar,sonar,levantarse,fijar,agitar,brillar,disparar,cerrar de golpe,hundirse,resbalar,girar,dividir,esparcir,robar,pegar,golpear,jurar,rasgar,esconder,morder,sostener,lanzar,atrapar,prestar,significar,reunirse,dejar entrar,pedir prestado,dejar caer,mesita de noche,edredón,alacena,ático,sótano,chimenea,azotea,trapeador,recogedor,cubeta,tendedero,perchero,gancho,florero,maceta,cerradura,manija,timbre,buzón,cochera,interruptor,enchufe,destornillador,tornillo,abrelatas,sacacorchos,cacerola,colador,rallador,tabla de cortar,jarra,cojín,funda,mantel,repisa,tapete,cortina de baño,báscula,botiquín,extensión,barandal,litera,cuna,portón,reja,extintor,aire acondicionado,calentador,secador de pelo,lavaplatos,fregadero,encendedor,cerillos,levadura,jengibre,perejil,albahaca,orégano,calabacín,chícharos,apio,betabel,rábano,berenjena,repollo,espárrago,pimiento,lentejas,garbanzo,coliflor,cordero,toronja,higo,frambuesa,arándano,ciruela,guayaba,granada,mandarina,dátil,mora,pasas,pistache,calamar,pulpo,costilla,chuleta,pechuga,muslo,mostaza,mayonesa,catsup,palomitas,rallar,batir,machacar,marinar,derretir,amasar,exprimir,revolver,rebanar,sazonar,asar`.replace(/\n/g,"").split(","));
+const lvl=w=>{const b=w.base||w.es;return L1.has(b)?1:L3.has(b)?3:2};
+for(const id in SETS)SETS[id].w.forEach(w=>{w.lv=lvl(w)});
+const KK="practica-ingles-known-v1";
+let known=null,LV=1;
+try{known=JSON.parse(localStorage.getItem(KK))}catch(e){}
+if(!known){known={};for(const id in SETS){try{const l=JSON.parse(localStorage.getItem("practica-ingles-v1"+SETS[id].k))||{};for(const k in l)if(l[k]<NEED)known[k]=1}catch(e){}}try{localStorage.setItem(KK,JSON.stringify(known))}catch(e){}}
+const saveKnown=()=>{try{localStorage.setItem(KK,JSON.stringify(known))}catch(e){}};
+try{LV=+localStorage.getItem("practica-ingles-nivel")||1}catch(e){}
+function menu(){
+  document.querySelectorAll("#lv button").forEach(b=>b.classList.toggle("on",+b.dataset.l===LV));
+  const it=new Set();for(const id in SETS)SETS[id].w.forEach(w=>{if(w.lv===LV)it.add(w.es)});
+  let k=0;it.forEach(e=>{if(known[e])k++});
+  $("kn").textContent=k+" / "+it.size;$("kb").querySelector("i").style.width=(it.size?100*k/it.size:0)+"%";
+  document.querySelectorAll(".opt").forEach(b=>{const id=b.dataset.s,n=SETS[id].w.filter(x=>x.lv===LV).length;b.lastElementChild.textContent=id==="verbos"?(n/3)+" verbos en 3 tiempos":n+" palabras"});
+}
+document.querySelectorAll("#lv button").forEach(b=>b.onclick=()=>{LV=+b.dataset.l;if(arm){clearTimeout(arm);arm=0;$("rk").classList.remove("arm")}try{localStorage.setItem("practica-ingles-nivel",LV)}catch(e){}menu()});
+let S,KEY,left,q=[],cur=null,fb=false,lastOk=false,lastWord="",streak=0,AC;
+const TTS="speechSynthesis" in window&&"SpeechSynthesisUtterance" in window;
+function speak(t){if(!TTS)return false;try{const y=speechSynthesis;if(y.speaking||y.pending)y.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;const v=y.getVoices();const b=v.find(x=>/^en[-_]US/i.test(x.lang))||v.find(x=>/^en/i.test(x.lang));if(b)u.voice=b;let st=false;u.onstart=()=>{st=true};u.onerror=e=>{if(e.error!=="interrupted"&&e.error!=="canceled"&&fb&&lastWord===t)beep(true)};setTimeout(()=>{try{y.speak(u)}catch(e){beep(true)}},60);setTimeout(()=>{if(!st&&fb&&lastWord===t)beep(true)},1500);return true}catch(e){return false}}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(left))}catch(e){}};
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-let q=[],cur=null,fb=false,lastOk=false,streak=0,GOAL=10,AC;
-function beep(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;(ok?[[660,0],[880,.12]]:[[220,0],[165,.16]]).forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?"sine":"sawtooth";o.frequency.value=f;g.gain.setValueAtTime(.15,t+d);g.gain.exponentialRampToValueAtTime(.001,t+d+.2);o.connect(g);g.connect(AC.destination);o.start(t+d);o.stop(t+d+.22)})}catch(e){}}
-function build(){q=shuffle(W.filter(w=>left[w.es]>0))}
+function beep(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==="suspended")AC.resume();const t=AC.currentTime;(ok?[[660,0],[880,.12]]:[[220,0],[165,.16]]).forEach(([f,d])=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?"sine":"sawtooth";o.frequency.value=f;g.gain.setValueAtTime(.15,t+d);g.gain.exponentialRampToValueAtTime(.001,t+d+.2);o.connect(g);g.connect(AC.destination);o.start(t+d);o.stop(t+d+.22)})}catch(e){}}
 function stats(){$("cnt").textContent="Racha: "+streak;$("bar").firstElementChild.style.width=Math.min(100,100*streak/GOAL)+"%"}
 function show(){
   fb=false;const c=$("card");c.className="";$("in").value="";$("in").disabled=false;
   $("go").textContent="COMPROBAR";$("go").disabled=true;stats();
-  if(!q.length){cur=null;c.textContent="¡Lista completada!";$("in").disabled=true;return}
-  cur=q[0];c.textContent=cur.es;$("in").focus();
+  if(!q.length){cur=null;c.textContent="¡Nivel completado!";$("in").disabled=true;return}
+  cur=q[0];c.textContent="";if(cur.base){c.append(cap(cur.base));const t=document.createElement("small");t.className="t";t.textContent=cap(cur.es.slice(cur.base.length+2,-1));c.append(t)}else c.textContent=cap(cur.es);$("in").focus();
 }
 function check(){
-  if(fb){q.shift();if(left[cur.es]>0)place(cur,lastOk?40:10,lastOk?20:6);show();return}
+  if(fb){if(lastOk&&S.say&&TTS){try{speechSynthesis.cancel()}catch(e){}beep(true)}q.shift();if(left[cur.es]>0)place(cur,lastOk?40:10,lastOk?20:6);show();return}
   const a=norm($("in").value);if(!a)return;
   const ok=cur.en.some(x=>norm(x)===a),c=$("card");
-  lastOk=ok;streak=ok?streak+1:0;beep(ok);
-  if(ok){left[cur.es]--;c.className="ok";c.textContent=cur.en[0];if(EX[cur.es]){const s=document.createElement("small");s.textContent=EX[cur.es];c.append(s)}}
-  else{c.className="no";c.innerHTML="";c.append(cur.en[0]);const s=document.createElement("small");s.textContent="Tu respuesta: "+$("in").value.trim()+". Volverá a salir.";c.append(s)}
+  lastOk=ok;streak=ok?streak+1:0;lastWord=ok?cur.en.find(x=>norm(x)===a):cur.en[0];
+  if(ok&&S.say&&speak(lastWord)){}else beep(ok);
+  if(ok){left[cur.es]--;if(!known[cur.es]){known[cur.es]=1;saveKnown()}c.className="ok";c.textContent=cap(cur.en.find(x=>norm(x)===a));const o=cur.en.filter(x=>norm(x)!==a);if(EX[cur.es]){const s=document.createElement("small");s.textContent=EX[cur.es];c.append(s)}if(o.length){const s=document.createElement("small");s.textContent="También: "+o.map(cap).join(", ");c.append(s)}}
+  else{c.className="no";c.innerHTML="";c.append(cur.en.map(cap).join(" / "));const s=document.createElement("small");s.textContent="Tu respuesta: "+$("in").value.trim()+". Volverá a salir.";c.append(s)}
   save();stats();fb=true;$("in").disabled=true;$("go").disabled=false;$("go").textContent="SIGUIENTE";$("go").focus();
 }
 function place(w,min,sp){q.splice(Math.min(q.length,min+Math.floor(Math.random()*sp)),0,w)}
+function start(id){
+  S=SETS[id];S.say=true;KEY="practica-ingles-v1"+S.k;left={};
+  try{left=JSON.parse(localStorage.getItem(KEY))||{}}catch(e){}
+  S.w.forEach(w=>{if(!(w.es in left))left[w.es]=NEED});
+  streak=0;q=shuffle(S.w.filter(w=>w.lv===LV&&left[w.es]>0));
+  $("home").hidden=true;$("game").hidden=false;show();
+}
+function home(){menu();$("game").hidden=true;$("home").hidden=false}
+$("tot").textContent=new Set([...VB.map(w=>w.base),...SETS.hogar.w.map(w=>w.es),...SETS.comida.w.map(w=>w.es),...SETS.azar.w.map(w=>w.es)]).size;
+document.querySelectorAll(".opt").forEach(b=>{const id=b.dataset.s,n=SETS[id].w.length;b.lastElementChild.textContent=id==="verbos"?(n/3)+" verbos en 3 tiempos":n+" palabras";b.onclick=()=>start(id)});
+let arm=0;
+$("rk").onclick=()=>{
+  if(!arm){$("rk").classList.add("arm");$("kn").textContent="Toca otra vez";arm=setTimeout(()=>{arm=0;$("rk").classList.remove("arm");menu()},3000);return}
+  clearTimeout(arm);arm=0;$("rk").classList.remove("arm");
+  for(const id in SETS){const key="practica-ingles-v1"+SETS[id].k;let l={};try{l=JSON.parse(localStorage.getItem(key))||{}}catch(e){}
+    SETS[id].w.forEach(w=>{if(w.lv===LV){delete l[w.es];delete known[w.es]}});
+    try{localStorage.setItem(key,JSON.stringify(l))}catch(e){}}
+  saveKnown();menu();
+};
+$("mn").onclick=home;menu();
 $("in").addEventListener("input",()=>{$("go").disabled=!$("in").value.trim()});
 $("in").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();check()}});
 $("go").addEventListener("click",check);
-build();show();
+$("card").addEventListener("click",()=>{if(fb&&S.say)speak(lastWord)});
 </script></body></html>
